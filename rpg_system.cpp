@@ -24,6 +24,13 @@ struct Weapon{
     int addHP;
 };
 
+struct SpecialItem{
+    string itemName;
+    int addAttack;
+    int addDefense;
+    int addHP;
+};
+
 void buatKarakter(int &charCount, int MAX_CHAR, Character chara[]){
     if (charCount >= MAX_CHAR){
         cout << "Jumlah karakter telah mencapai batas maksimal\n";
@@ -124,7 +131,7 @@ int toko(int &uang, int charCount, string item[], int harga[], int totalItem){
     return beli-1;
 }
 
-void inventory(string item[], int purchasedItem, string inventoryList[], int invertoryCount, int totalItem, int jumlahItemInventory[]){
+void inventory(string item[], int purchasedItem, int totalItem, int jumlahItemInventory[]){
     cout << "Item kamu: \n";
     for(int i = 0; i < totalItem; i++){
         cout << i+1 << ". " << item[i] << " - "<< "Kamu punya : " << jumlahItemInventory[i] <<'\n';
@@ -139,13 +146,28 @@ void equipWeapon(Character &chara, Weapon weapon){
     chara.currentStats.HP += weapon.addHP;
 }
 
-void equipSpecialItem(Character &chara, string specialItem){
-    chara.specialItem = specialItem;
+void equipSpecialItem(Character &chara, SpecialItem specialitem, string item[]){
+    chara.specialItem = specialitem.itemName;
+    chara.currentStats = chara.baseStats;
+    if(specialitem.itemName == item[10]){
+        chara.currentStats.HP += specialitem.addHP;
+    }
+    else if(specialitem.itemName == item[11]){
+        chara.currentStats.attack += specialitem.addAttack;
+    }
+    else if(specialitem.itemName == item[12]){
+        chara.currentStats.defense += specialitem.addDefense;
+    }
+    else if(specialitem.itemName == item[13]){
+        chara.currentStats.HP += specialitem.addHP;
+        chara.currentStats.attack += specialitem.addAttack;
+        chara.currentStats.defense += specialitem.addDefense;
+    }
 }
 
-void equipItem(string item[], int purchasedItem, string inventoryList[], int invertoryCount, int totalItem, int jumlahItemInventory[], Character chara[], int charCount , Weapon weapon){
+void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemInventory[], Character chara[], int charCount , Weapon weapon){
     cout << "Kamu punya item : \n";
-    inventory(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory);
+    inventory(item, purchasedItem, totalItem, jumlahItemInventory);
     cout << "Masukkan nomor item yang ingin di pakai: ";
     int equip;
     cin >> equip;
@@ -225,8 +247,8 @@ void equipItem(string item[], int purchasedItem, string inventoryList[], int inv
 int main(){
     int pilihan;
     int charCount = 0;
-    const int MAX_CHAR = 4;
     int uang = 500000;
+    const int MAX_CHAR = 4;
     Character chara[MAX_CHAR];
     Weapon weapon;
     
@@ -236,8 +258,6 @@ int main(){
     int jumlahItemInventory[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     int purchasedItem = -1;
-    string inventoryList[13];
-    int invertoryCount = 0;
 
     cout << "Selamat datang di game RPG ku\n";
     do{
@@ -267,16 +287,15 @@ int main(){
                 if (purchasedItem != -1){
                     cout << "Item " << item[purchasedItem] << " telah ditambahkan ke inventory\n";
                     jumlahItemInventory[purchasedItem]++;
-                    invertoryCount++;
                 }
                 cout << '\n';
                 break;
             case 4:
-                inventory(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory);
+                inventory(item, purchasedItem, totalItem, jumlahItemInventory);
                 cout << '\n';
                 break;
             case 5:
-                equipItem(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory, chara, charCount, weapon);
+                equipItem(item, purchasedItem, totalItem, jumlahItemInventory, chara, charCount, weapon);
                 break;
             case 6:
                 break;
