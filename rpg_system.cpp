@@ -154,14 +154,23 @@ void equipItem(string item[], int purchasedItem, string inventoryList[], int inv
                 break;
             case 4:
                 chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 80;
-                chara[charEquip-1].stats.defense += 15;
-                chara[charEquip-1].stats.HP += 25;
+                chara[charEquip-1].stats.attack += 25;
+                chara[charEquip-1].stats.defense += 5;
+                chara[charEquip-1].stats.HP += 8;
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 5:
+                chara[charEquip-1].weapon = item[equip-1];
+                chara[charEquip-1].stats.attack += 35;
+                chara[charEquip-1].stats.defense += 12;
+                chara[charEquip-1].stats.HP += 15;
+                cout << "Kamu telah memakai item " << item[equip-1] << "\n";
+                break;
             case 6:
-                cout << "Item ini adalah senjata untuk role Marksman\n";
+                chara[charEquip-1].weapon = item[equip-1];
+                chara[charEquip-1].stats.attack += 85;
+                chara[charEquip-1].stats.defense += 20;
+                chara[charEquip-1].stats.HP += 25;
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 7:
