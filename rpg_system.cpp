@@ -9,11 +9,19 @@ struct Statistics{
 };
 
 struct Character{
-    Statistics stats;
+    Statistics baseStats;
+    Statistics currentStats;
     string name;
     string role;
     string weapon;
     string specialItem;
+};
+
+struct Weapon{
+    string weaponName;
+    int addAttack;
+    int addDefense;
+    int addHP;
 };
 
 void buatKarakter(int &charCount, int MAX_CHAR, Character chara[]){
@@ -34,19 +42,29 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[]){
         }
 
         if(newChar.role == "DPS" || newChar.role == "dps" || newChar.role == "Dps"){
-            /*
-            newChar.stats.level = 1;
-            newChar.stats.HP = 150;
-            newChar.stats.attack = 80;
-            newChar.stats.defense = 50;
-            newChar.weapon = "Basic Sword"; */
-            newChar = {{1, 150, 80, 50}, newChar.name, "DPS", "Basic Sword", "None"};
+            //newChar = {{1, 150, 80, 50}, newChar.baseStats, newChar.name, "Marksman", "Wooden Bow", "None"};
+            newChar.baseStats = {1, 150, 80, 50};
+            newChar.currentStats = newChar.baseStats;
+            newChar.role = "DPS";
+            newChar.weapon = "Basic Sword";
+            newChar.specialItem = "None";
+
         }
         else if(newChar.role == "Marksman" || newChar.role == "marksman"){
-            newChar = {{1, 120, 70, 50}, newChar.name, "Marksman", "Wooden Bow", "None"};
+            //newChar = {{1, 120, 70, 50}, newChar.baseStats, newChar.name, "Marksman", "Wooden Bow", "None"};
+            newChar.baseStats = {1, 120, 70, 50};
+            newChar.currentStats = newChar.baseStats;
+            newChar.role = "Marksman";
+            newChar.weapon = "Wooden Bow";
+            newChar.specialItem = "None";
         }
         else if(newChar.role == "Sustain" || newChar.role == "sustain"){
-            newChar = {{1, 200, 50, 90}, newChar.name, "Sustain", "Basic Shield", "None"};
+            //newChar = {{1, 200, 50, 90},newChar.baseStats, newChar.name, "Sustain", "Basic Shield", "None"};
+            newChar.baseStats = {1, 200, 50, 90};
+            newChar.currentStats = newChar.baseStats;
+            newChar.role = "Sustain";
+            newChar.weapon = "Basic Shield";
+            newChar.specialItem = "None";
         }
         chara[charCount] = newChar;
         charCount++;
@@ -62,10 +80,10 @@ void listKarakter(int charCount, Character chara[]){
     for(int i = 0; i < charCount; i++){
         cout << i+1 << ". Nama Karakter : " << chara[i].name << '\n';
         cout << " Role : " << chara[i].role << '\n';
-        cout << " Level : " << chara[i].stats.level << '\n';
-        cout << " Attack : " << chara[i].stats.attack << '\n';
-        cout << " HP : " << chara[i].stats.HP << '\n';
-        cout << " Defense : " << chara[i].stats.defense << '\n';
+        cout << " Level : " << chara[i].currentStats.level << '\n';
+        cout << " Attack : " << chara[i].currentStats.attack << '\n';
+        cout << " HP : " << chara[i].currentStats.HP << '\n';
+        cout << " Defense : " << chara[i].currentStats.defense << '\n';
         cout << " Weapon : " << chara[i].weapon << '\n';
         cout << " Special Item : " << chara[i].specialItem << "\n\n";
     }
@@ -113,7 +131,19 @@ void inventory(string item[], int purchasedItem, string inventoryList[], int inv
     }
 }
 
-void equipItem(string item[], int purchasedItem, string inventoryList[], int invertoryCount, int totalItem, int jumlahItemInventory[], Character chara[], int charCount){
+void equipWeapon(Character &chara, Weapon weapon){
+    chara.weapon = weapon.weaponName;
+    chara.currentStats = chara.baseStats;
+    chara.currentStats.attack += weapon.addAttack;
+    chara.currentStats.defense += weapon.addDefense;
+    chara.currentStats.HP += weapon.addHP;
+}
+
+void equipSpecialItem(Character &chara, string specialItem){
+    chara.specialItem = specialItem;
+}
+
+void equipItem(string item[], int purchasedItem, string inventoryList[], int invertoryCount, int totalItem, int jumlahItemInventory[], Character chara[], int charCount , Weapon weapon){
     cout << "Kamu punya item : \n";
     inventory(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory);
     cout << "Masukkan nomor item yang ingin di pakai: ";
@@ -132,51 +162,39 @@ void equipItem(string item[], int purchasedItem, string inventoryList[], int inv
         cin >> charEquip;
         switch(equip){
             case 1:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 20;
-                chara[charEquip-1].stats.defense += 5;
-                chara[charEquip-1].stats.HP += 10;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 20, 5, 10});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 2:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 40;
-                chara[charEquip-1].stats.defense += 10;
-                chara[charEquip-1].stats.HP += 15;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 40, 10, 15});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 3:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 80;
-                chara[charEquip-1].stats.defense += 15;
-                chara[charEquip-1].stats.HP += 25;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 80, 15, 25});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 4:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 25;
-                chara[charEquip-1].stats.defense += 5;
-                chara[charEquip-1].stats.HP += 8;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 25, 5, 8});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 5:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 35;
-                chara[charEquip-1].stats.defense += 12;
-                chara[charEquip-1].stats.HP += 15;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 35, 12, 15});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 6:
-                chara[charEquip-1].weapon = item[equip-1];
-                chara[charEquip-1].stats.attack += 85;
-                chara[charEquip-1].stats.defense += 20;
-                chara[charEquip-1].stats.HP += 25;
+                equipWeapon(chara[charEquip-1], {item[equip-1], 85, 20, 25});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 7:
+                equipWeapon(chara[charEquip-1], {item[equip-1], 10, 20, 15});
+                cout << "Kamu telah memakai item " << item[equip-1] << "\n";
+                break;
             case 8:
+                equipWeapon(chara[charEquip-1], {item[equip-1], 20, 40, 35});
+                cout << "Kamu telah memakai item " << item[equip-1] << "\n";
+                break;
             case 9:
-                cout << "Item ini adalah senjata untuk role Sustain\n";
+                equipWeapon(chara[charEquip-1], {item[equip-1], 40, 85, 90});
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 10:
@@ -198,7 +216,7 @@ void equipItem(string item[], int purchasedItem, string inventoryList[], int inv
             default:
                 break;
         }
-        cout << "Stats karakter setelah memakai item: \n";
+        cout << "\nStats karakter setelah memakai item: \n";
         listKarakter(charCount, chara);
     }
 
@@ -208,8 +226,9 @@ int main(){
     int pilihan;
     int charCount = 0;
     const int MAX_CHAR = 4;
-    int uang = 100000;
+    int uang = 500000;
     Character chara[MAX_CHAR];
+    Weapon weapon;
     
     string item[13] = {"Stone Sword", "Iron Sword", "Diamond Sword", "Iron Bow", "Diamond Bow", "Assault Rifle", "Stone Shield", "Iron Shield", "Diamond Shield", "Health Potion", "Attack Potion", "Defense Potion", "All in One Potion"};
     int harga[13] = {50000, 100000, 150000, 50000, 50000, 150000, 50000, 100000, 150000, 20000, 30000, 30000, 50000};
@@ -257,7 +276,7 @@ int main(){
                 cout << '\n';
                 break;
             case 5:
-                equipItem(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory, chara, charCount);
+                equipItem(item, purchasedItem, inventoryList, invertoryCount, totalItem, jumlahItemInventory, chara, charCount, weapon);
                 break;
             case 6:
                 break;
