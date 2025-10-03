@@ -31,7 +31,19 @@ struct SpecialItem{
     int addHP;
 };
 
-void buatKarakter(int &charCount, int MAX_CHAR, Character chara[]){
+void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
+    int agreeMake;
+    cout << "Membuat karakter baru membutuhkan uang 50000\n";
+    cout << "Apakah kamu setuju? (1. Ya / 2. Tidak): ";
+    cin >> agreeMake;
+    if(agreeMake == 2){
+        cout << "Kamu membatalkan pembuatan karakter\n";
+        return;
+    }
+    else if(agreeMake != 1 && agreeMake != 2){
+        cout << "Masukkan pilihan yang valid!\n";
+        return;
+    }
     if (charCount >= MAX_CHAR){
         cout << "Jumlah karakter telah mencapai batas maksimal\n";
     }
@@ -75,6 +87,7 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[]){
         }
         chara[charCount] = newChar;
         charCount++;
+        uang -= 50000;
         cout << "Karakter telah berhasil dibuat!\n";
     }
 }
@@ -92,7 +105,7 @@ void listKarakter(int charCount, Character chara[]){
         cout << " HP : " << chara[i].currentStats.HP << '\n';
         cout << " Defense : " << chara[i].currentStats.defense << '\n';
         cout << " Weapon : " << chara[i].weapon << '\n';
-        cout << " Special Item : " << chara[i].specialItem << "\n\n";
+        cout << " Special Item : " << chara[i].specialItem << "\n";
     }
 }
 
@@ -220,19 +233,19 @@ void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemIn
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 10:
-                cout << "Item ini adalah potion untuk menambah HP\n";
+                equipSpecialItem(chara[charEquip-1], {item[equip-1], 0, 0, 50}, item);
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 11:
-                cout << "Item ini adalah potion untuk menambah Attack\n";
+                equipSpecialItem(chara[charEquip-1], {item[equip-1], 40, 0, 0}, item);
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 12:
-                cout << "Item ini adalah potion untuk menambah Defense\n";
+                equipSpecialItem(chara[charEquip-1], {item[equip-1], 0, 30, 0}, item);
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             case 13:
-                cout << "Item ini adalah potion untuk menambah semua stats\n";
+                equipSpecialItem(chara[charEquip-1], {item[equip-1], 40, 30, 40}, item);
                 cout << "Kamu telah memakai item " << item[equip-1] << "\n";
                 break;
             default:
@@ -247,19 +260,19 @@ void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemIn
 int main(){
     int pilihan;
     int charCount = 0;
-    int uang = 500000;
-    const int MAX_CHAR = 4;
+    int uang = 200000;
+    const int MAX_CHAR = 10;
     Character chara[MAX_CHAR];
     Weapon weapon;
     
     string item[13] = {"Stone Sword", "Iron Sword", "Diamond Sword", "Iron Bow", "Diamond Bow", "Assault Rifle", "Stone Shield", "Iron Shield", "Diamond Shield", "Health Potion", "Attack Potion", "Defense Potion", "All in One Potion"};
-    int harga[13] = {50000, 100000, 150000, 50000, 50000, 150000, 50000, 100000, 150000, 20000, 30000, 30000, 50000};
+    int harga[13] = {50000, 120000, 200000, 50000, 120000, 200000, 50000, 120000, 200000, 30000, 30000, 30000, 75000};
     int totalItem = sizeof(item)/sizeof(item[0]);
     int jumlahItemInventory[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     int purchasedItem = -1;
 
-    cout << "Selamat datang di game RPG ku\n";
+    cout << "Selamat datang di game RPG ngasal\n";
     do{
         cout << "Menu: \n";
         cout << "1. Buat karakter baru\n";
@@ -271,10 +284,11 @@ int main(){
         cout << "7. Keluar\n";
         cout << "Masukkan pilihan: ";
         cin >> pilihan;
+        cout << '\n';
 
         switch(pilihan){
             case 1:
-                buatKarakter(charCount, MAX_CHAR, chara);
+                buatKarakter(charCount, MAX_CHAR, chara, uang);
                 cout << '\n';
                 break;
             case 2:
