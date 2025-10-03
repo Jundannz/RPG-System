@@ -454,7 +454,9 @@ int main(){
     int chosenChar;
     int result = -1;
 
+    cout << "==================================";
     cout << "Selamat datang di game RPG ngasal\n";
+    cout << "==================================";
     do{
         cout << "Menu: \n";
         cout << "1. Buat karakter baru\n";
