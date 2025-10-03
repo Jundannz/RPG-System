@@ -356,11 +356,7 @@ bool checkMenang(Character chara, Enemy enemies){
     return false;
 }
 
-int expCalculation(int level, Character &chara){
-    return 0;
-}
-
-void battle(int &damage, int MAX_ENEMY, Character chara[], Enemy enemies[], int &uang, int level, int exp){
+int battle(int &damage, int MAX_ENEMY, Character chara[], Enemy enemies[], int &uang, int level, int exp){
     int charBattle;
     cout << "Pilih karakter yang ingin digunakan untuk bertarung (masukkan nomor karakter): ";
     cin >> charBattle;
@@ -380,6 +376,40 @@ void battle(int &damage, int MAX_ENEMY, Character chara[], Enemy enemies[], int 
         enemyTurn(damage, chara[charBattle-1], enemies[enemyBattle-1]);
         checkMenang(chara[charBattle-1], enemies[enemyBattle-1]);
     }while(!checkMenang(chara[charBattle-1], enemies[enemyBattle-1]));
+    
+    if(enemies[enemyBattle-1].enemyStats.HP <= 0){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
+int battleReward(int &level, Character &chara, int &uang, Enemy &enemies, int &exp, int MAX_EXP, int &damage){
+    int winner = battle(damage, 4, &chara, &enemies, uang, level, exp);
+    if(winner == 1){
+        cout << "Kamu mendapatkan " << enemies.enemyStats.exp << " EXP dan " << enemies.enemyStats.level * 10000 << " uang!\n";
+        exp += enemies.enemyStats.exp;
+        uang += enemies.enemyStats.level * 10000;
+        if(exp >= MAX_EXP){
+            level++;
+            chara.currentStats.level = level;
+            chara.baseStats.level = level;
+            chara.currentStats.HP += 20;
+            chara.baseStats.HP += 20;
+            chara.currentStats.attack += 10;
+            chara.baseStats.attack += 10;
+            chara.currentStats.defense += 5;
+            chara.baseStats.defense += 5;
+            exp -= MAX_EXP;
+            cout << "Level up! Level kamu sekarang: " << level << '\n';
+            cout << "Stats kamu bertambah!\n";
+        }
+    }
+    else{
+        cout << "Kamu tidak mendapatkan apapun karena kalah dalam pertarungan\n";
+    }
+    return 0;
 }
 
 int main(){
