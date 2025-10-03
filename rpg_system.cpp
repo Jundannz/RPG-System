@@ -289,7 +289,7 @@ void enemyGenerator(Enemy enemies[], int level){
     enemies[3].enemyName = "Dragon";
 }
 
-int damageCalculationKarakter(int &damage, Character chara, Enemy enemies){
+int damageCalculationKarakter(Character &chara, Enemy &enemies){
     int damage = (chara.currentStats.attack - (enemies.enemyStats.defense/2)) + rand() % 21 - 10;
     if( rand() % 100 < 20){
         damage *= 2;
@@ -298,7 +298,7 @@ int damageCalculationKarakter(int &damage, Character chara, Enemy enemies){
     return damage;
 }
 
-int damageCalculationEnemy(int &damage, Character chara, Enemy enemies){
+int damageCalculationEnemy(Character &chara, Enemy &enemies){
     int damage = (enemies.enemyStats.attack - (chara.currentStats.defense/2)) + rand() % 21 - 10;
     if( rand() % 100 < 20){
         damage *= 2;
@@ -307,15 +307,16 @@ int damageCalculationEnemy(int &damage, Character chara, Enemy enemies){
     return damage;
 }
 
-void playerTurn(int &damage, Character chara, Enemy enemies){
+void playerTurn(Character &chara, Enemy &enemies, bool &isDefending){
     int action;
-    int damageDealt = damageCalculationKarakter(damage, chara, enemies);
     cout << "Pilih aksi:\n";
     cout << "1. Attack\n";
     cout << "2. Defend\n";
     cout << "Masukkan pilihan: ";
     cin >> action;
+
     if (action == 1){
+        int damageDealt = damageCalculationKarakter(chara, enemies);
         cout << chara.name << " menyerang " << enemies.enemyName << " dan memberikan " << damageDealt << " damage!\n";
         enemies.enemyStats.HP -= damageDealt;
         if(enemies.enemyStats.HP < 0){
@@ -325,17 +326,22 @@ void playerTurn(int &damage, Character chara, Enemy enemies){
     }
     else if(action == 2){
         cout << chara.name << " memilih untuk bertahan!\n";
-        chara.currentStats.defense += chara.baseStats.defense / 2;
-        cout << chara.name << " mendapatkan tambahan defense sebesar " << chara.baseStats.defense / 2 << '\n';
+        isDefending = true;
     }
     else{
         cout << "Masukkan pilihan yang valid!\n";
     }
 }
 
-void enemyTurn(int &damage, Character chara, Enemy enemies){
+void enemyTurn(Character &chara, Enemy &enemies, bool &isDefending){
     cout << "Giliran musuh\n";
-    int damageDealt = damageCalculationEnemy(damage, chara, enemies);
+    int damageDealt = damageCalculationEnemy(chara, enemies);
+
+    if(isDefending){
+        damageDealt /= 2;
+        cout << chara.name << " menahan serangan! Damage berkurang setengah.\n";
+        isDefending = false;
+    }
     cout << enemies.enemyName << " menyerang " << chara.name << " dan memberikan " << damageDealt << " damage!\n";
     chara.currentStats.HP -= damageDealt;
     if(chara.currentStats.HP < 0){
@@ -356,55 +362,64 @@ bool checkMenang(Character chara, Enemy enemies){
     return false;
 }
 
-int battle(int &damage, int MAX_ENEMY, Character chara[], Enemy enemies[], int &uang, int level, int exp){
-    int charBattle;
+int battle(int &chosenChar, int MAX_ENEMY, Character chara[], Enemy enemies[], int charCount){
+    bool isDefending = false;
     cout << "Pilih karakter yang ingin digunakan untuk bertarung (masukkan nomor karakter): ";
-    cin >> charBattle;
-    cout << "Kamu telah memilih karakter " << chara[charBattle-1].name << " untuk bertarung\n";
+    cin >> chosenChar;
+
+    Character &player = chara[chosenChar-1];
+
+    if(chosenChar < 1 || chosenChar > charCount){
+        cout << "Karakter tidak ada\n";
+        return -1;
+    }
+    
+    cout << "Kamu telah memilih karakter " << chara[chosenChar-1].name << " untuk bertarung\n";
     cout << "Pilih musuh yang ingin dihadapi:\n";
     for(int i = 0; i < MAX_ENEMY; i++){
         cout << i+1 << ". " << enemies[i].enemyName << " (Level " << enemies[i].enemyStats.level << ")\n";
     }
-    cout << "Masukkan nomor musuh yang ingin dihadapi: ";
+
     int enemyBattle;
+    if(enemyBattle < 1 || enemyBattle > MAX_ENEMY-1){
+        cout << "Monster tidak ada\n";
+        return -1;
+    }
+    
+    cout << "Masukkan nomor musuh yang ingin dihadapi: ";
     cin >> enemyBattle;
     cout << "Kamu telah memilih musuh " << enemies[enemyBattle-1].enemyName << " untuk dihadapi\n";
     cout << "Pertarungan dimulai!\n";
+    chara[chosenChar-1].currentStats.HP = chara[chosenChar-1].baseStats.HP;
+    enemies[enemyBattle-1].enemyStats.HP = 100 + (enemies[enemyBattle-1].enemyStats.level * 20);
     do{
-        playerTurn(damage, chara[charBattle-1], enemies[enemyBattle-1]);
-        checkMenang(chara[charBattle-1], enemies[enemyBattle-1]);
-        enemyTurn(damage, chara[charBattle-1], enemies[enemyBattle-1]);
-        checkMenang(chara[charBattle-1], enemies[enemyBattle-1]);
-    }while(!checkMenang(chara[charBattle-1], enemies[enemyBattle-1]));
+        playerTurn(chara[chosenChar-1], enemies[enemyBattle-1], isDefending);
+        if(checkMenang(chara[chosenChar-1], enemies[enemyBattle-1])) break;
+        enemyTurn(chara[chosenChar-1], enemies[enemyBattle-1], isDefending);
+        if(checkMenang(chara[chosenChar-1], enemies[enemyBattle-1])) break;
+    }while(true);
     
-    if(enemies[enemyBattle-1].enemyStats.HP <= 0){
-        return 1;
-    }
-    else{
-        return 0;
-    }
+    if(enemies[enemyBattle-1].enemyStats.HP <= 0) return enemyBattle-1;
+    return -1;
 }
 
-int battleReward(int &level, Character &chara, int &uang, Enemy &enemies, int &exp, int MAX_EXP, int &damage){
-    int winner = battle(damage, 4, &chara, &enemies, uang, level, exp);
-    if(winner == 1){
-        cout << "Kamu mendapatkan " << enemies.enemyStats.exp << " EXP dan " << enemies.enemyStats.level * 10000 << " uang!\n";
-        exp += enemies.enemyStats.exp;
-        uang += enemies.enemyStats.level * 10000;
-        if(exp >= MAX_EXP){
-            level++;
-            chara.currentStats.level = level;
-            chara.baseStats.level = level;
-            chara.currentStats.HP += 20;
-            chara.baseStats.HP += 20;
-            chara.currentStats.attack += 10;
-            chara.baseStats.attack += 10;
-            chara.currentStats.defense += 5;
-            chara.baseStats.defense += 5;
-            exp -= MAX_EXP;
-            cout << "Level up! Level kamu sekarang: " << level << '\n';
-            cout << "Stats kamu bertambah!\n";
-        }
+int battleReward(Character &chara, Enemy &enemies, int &uang, int MAX_EXP, bool menang){
+    cout << "Kamu mendapatkan " << enemies.enemyStats.exp << " EXP dan " << enemies.enemyStats.level * 10000 << " uang!\n";
+    chara.baseStats.exp += enemies.enemyStats.exp;
+    uang += enemies.enemyStats.level * 10000;
+
+    if(chara.baseStats.exp >= MAX_EXP){
+        chara.baseStats.exp -= MAX_EXP;
+        chara.baseStats.level++;
+        chara.currentStats.level = chara.baseStats.level;
+        chara.currentStats.HP += 20;
+        chara.baseStats.HP += 20;
+        chara.currentStats.attack += 10;
+        chara.baseStats.attack += 10;
+        chara.currentStats.defense += 5;
+        chara.baseStats.defense += 5;
+        cout << "Level up! Level kamu sekarang: " << chara.currentStats.level << '\n';
+        cout << "Stats kamu bertambah!\n";
     }
     else{
         cout << "Kamu tidak mendapatkan apapun karena kalah dalam pertarungan\n";
@@ -432,6 +447,8 @@ int main(){
     const int MAX_EXP = 100;
     int purchasedItem = -1;
     int damage = 0;
+    int chosenChar;
+    int result = -1;
 
     cout << "Selamat datang di game RPG ngasal\n";
     do{
@@ -500,6 +517,21 @@ int main(){
                 equipItem(item, purchasedItem, totalItem, jumlahItemInventory, chara, charCount, weapon);
                 break;
             case 6:
+                if(charCount == 0){
+                    cout << "Kamu belum punya karakter untuk battle\n";
+                    break;
+                }
+                enemyGenerator(enemies, 1);
+                result = battle(chosenChar, MAX_ENEMY, chara, enemies, charCount);
+
+                bool menang = (result != -1);
+
+                if(menang){
+                    battleReward(chara[chosenChar-1], enemies[result], uang, MAX_EXP, true);
+                }
+                else{
+                    battleReward(chara[chosenChar-1], enemies[0], uang, MAX_EXP, false);
+                }
                 break;
             case 7:
                 cout << "Terima kasih sudah memainkan game ini!\n";
