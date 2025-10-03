@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 struct Statistics{
@@ -6,6 +8,7 @@ struct Statistics{
     int HP;
     int attack;
     int defense;
+    int exp;
 };
 
 struct Character{
@@ -29,6 +32,11 @@ struct SpecialItem{
     int addAttack;
     int addDefense;
     int addHP;
+};
+
+struct Enemy{
+    Statistics enemyStats;
+    string enemyName;
 };
 
 void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
@@ -62,7 +70,7 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
 
         if(newChar.role == "DPS" || newChar.role == "dps" || newChar.role == "Dps"){
             //newChar = {{1, 150, 80, 50}, newChar.baseStats, newChar.name, "Marksman", "Wooden Bow", "None"};
-            newChar.baseStats = {1, 150, 80, 50};
+            newChar.baseStats = {1, 150, 80, 50, 0};
             newChar.currentStats = newChar.baseStats;
             newChar.role = "DPS";
             newChar.weapon = "Basic Sword";
@@ -71,7 +79,7 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
         }
         else if(newChar.role == "Marksman" || newChar.role == "marksman"){
             //newChar = {{1, 120, 70, 50}, newChar.baseStats, newChar.name, "Marksman", "Wooden Bow", "None"};
-            newChar.baseStats = {1, 120, 70, 50};
+            newChar.baseStats = {1, 120, 70, 50, 0};
             newChar.currentStats = newChar.baseStats;
             newChar.role = "Marksman";
             newChar.weapon = "Wooden Bow";
@@ -79,7 +87,7 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
         }
         else if(newChar.role == "Sustain" || newChar.role == "sustain"){
             //newChar = {{1, 200, 50, 90},newChar.baseStats, newChar.name, "Sustain", "Basic Shield", "None"};
-            newChar.baseStats = {1, 200, 50, 90};
+            newChar.baseStats = {1, 200, 50, 90, 0};
             newChar.currentStats = newChar.baseStats;
             newChar.role = "Sustain";
             newChar.weapon = "Basic Shield";
@@ -266,22 +274,97 @@ void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemIn
         cout << "\nStats karakter setelah memakai item: \n";
         listKarakter(charCount, chara);
     }
+}
 
+void enemyGenerator(Enemy enemies[], int level){
+    for(int i = 0; i < 4; i++){
+        enemies[i].enemyStats.level = level;
+        enemies[i].enemyStats.HP = 100 + (level * 20);
+        enemies[i].enemyStats.attack = 50 + (level * 10);
+        enemies[i].enemyStats.defense = 30 + (level * 5);
+        enemies[i].enemyStats.exp = 20 + (level * 5);
+    }
+    enemies[0].enemyName = "Goblin";
+    enemies[1].enemyName = "Oni";
+    enemies[2].enemyName = "Slime";
+    enemies[3].enemyName = "Dragon";
+}
+
+void battle(int MAX_ENEMY, Character chara[], Enemy enemies[], int &uang, int level, int exp){
+    int charBattle;
+    cout << "Pilih karakter yang ingin digunakan untuk bertarung (masukkan nomor karakter): ";
+    cin >> charBattle;
+    cout << "Kamu telah memilih karakter " << chara[charBattle-1].name << " untuk bertarung\n";
+    cout << "Pilih musuh yang ingin dihadapi:\n";
+    for(int i = 0; i < MAX_ENEMY; i++){
+        cout << i+1 << ". " << enemies[i].enemyName << " (Level " << enemies[i].enemyStats.level << ")\n";
+    }
+    cout << "Masukkan nomor musuh yang ingin dihadapi: ";
+    int enemyBattle;
+    cin >> enemyBattle;
+    cout << "Kamu telah memilih musuh " << enemies[enemyBattle-1].enemyName << " untuk dihadapi\n";
+    cout << "Pertarungan dimulai!\n";
+    do{
+        playerTurn();
+        checkMenang();
+        enemyTurn();
+        checkMenang();
+    }while(!checkMenang());
+}
+
+int damageCalculation(int attack, int defense){
+    int damage = (attack - defense) + rand() % 21 - 10;
+    if( rand() % 100 < 20){
+        damage *= 2;
+        cout << "Critical Hit!\n";
+    }
+    return 0;
+}
+
+void playerTurn(){
+    int action;
+    int damage;
+    cout << "Pilih aksi:\n";
+    cout << "1. Attack\n";
+    cout << "2. Defend\n";
+    cout << "Masukkan pilihan: ";
+    cin >> action;
+    if (action == 1){
+
+    }
+
+}
+
+void enemyTurn(){
+
+}
+
+bool checkMenang(){
+    return false;
+}
+
+int expCalculation(int level, Character &chara){
+    return 0;
 }
 
 int main(){
     int pilihan;
     int charCount = 0;
     int uang = 200000;
+    srand(time(0));
+
     const int MAX_CHAR = 10;
     Character chara[MAX_CHAR];
     Weapon weapon;
+    const int MAX_ENEMY = 4;
+    Enemy enemies[MAX_ENEMY];
     
     string item[13] = {"Stone Sword", "Iron Sword", "Diamond Sword", "Iron Bow", "Diamond Bow", "Assault Rifle", "Stone Shield", "Iron Shield", "Diamond Shield", "Health Potion", "Attack Potion", "Defense Potion", "All in One Potion"};
     int harga[13] = {50000, 120000, 200000, 50000, 120000, 200000, 50000, 120000, 200000, 30000, 30000, 30000, 75000};
     int totalItem = sizeof(item)/sizeof(item[0]);
     int jumlahItemInventory[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+    const int MAX_EXP = 100;
     int purchasedItem = -1;
 
     cout << "Selamat datang di game RPG ngasal\n";
@@ -304,10 +387,11 @@ int main(){
                 cout << '\n';
                 break;
             case 2:
-            cout << "List atau cari karakter? (1. List / 2. Cari): ";
-            cin.ignore();
-            int listOrSearch;
+                cout << "List atau cari karakter? (1. List / 2. Cari): ";
+                int listOrSearch;
                 cin >> listOrSearch;
+                cin.ignore();
+                cout << '\n';
                 if(listOrSearch == 1){
                     cout << "Daftar Karakter:\n";
                     listKarakter(charCount, chara);
