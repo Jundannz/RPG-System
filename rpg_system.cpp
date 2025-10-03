@@ -109,6 +109,18 @@ void listKarakter(int charCount, Character chara[]){
     }
 }
 
+int searchKarakter(int charCount, Character chara[], string name){
+    string nameSearch;
+    cout << "Masukkan nama karakter yang ingin dicari: ";
+    getline(cin, nameSearch);
+    for(int i = 0; i < charCount; i++){
+        if(chara[i].name == nameSearch){
+            return i;
+        }
+    }
+    return -1;
+}
+
 int toko(int &uang, int charCount, string item[], int harga[], int totalItem){
     int beli;
     cout << "Uangmu: " << uang << '\n';
@@ -292,9 +304,35 @@ int main(){
                 cout << '\n';
                 break;
             case 2:
-                cout << "Daftar Karakter:\n";
-                listKarakter(charCount, chara);
-                cout << '\n';
+            cout << "List atau cari karakter? (1. List / 2. Cari): ";
+            cin.ignore();
+            int listOrSearch;
+                cin >> listOrSearch;
+                if(listOrSearch == 1){
+                    cout << "Daftar Karakter:\n";
+                    listKarakter(charCount, chara);
+                    cout << '\n';
+                }
+                else if(listOrSearch == 2){
+                    int foundIndex = searchKarakter(charCount, chara, "");
+                    if(foundIndex != -1){
+                        cout << "Karakter ditemukan!\n";
+                        cout << "Nama Karakter : " << chara[foundIndex].name << '\n';
+                        cout << " Role : " << chara[foundIndex].role << '\n';
+                        cout << " Level : " << chara[foundIndex].currentStats.level << '\n';
+                        cout << " Attack : " << chara[foundIndex].currentStats.attack << '\n';
+                        cout << " HP : " << chara[foundIndex].currentStats.HP << '\n';
+                        cout << " Defense : " << chara[foundIndex].currentStats.defense << '\n';
+                        cout << " Weapon : " << chara[foundIndex].weapon << '\n';
+                        cout << " Special Item : " << chara[foundIndex].specialItem << "\n\n";
+                    }
+                    else{
+                        cout << "Karakter tidak ditemukan!\n\n";
+                    }
+                }
+                else{
+                    cout << "Masukkan pilihan yang valid!\n\n";
+                }
                 break;
             case 3:
                 purchasedItem = toko(uang, charCount, item, harga, totalItem);
