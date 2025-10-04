@@ -432,7 +432,7 @@ void battleReward(Character &chara, Enemy &enemies, int &uang, int MAX_EXP, bool
 }
 
 int main(){
-    int pilihan;
+    int pilihan = 0;
     int charCount = 0;
     int uang = 200000;
     srand(time(0));
@@ -451,7 +451,7 @@ int main(){
     const int MAX_EXP = 100;
     int purchasedItem = -1;
     int damage = 0;
-    int chosenChar;
+    int chosenChar = 0;
     int result = -1;
 
     cout << "==================================";
