@@ -44,8 +44,13 @@ void buatKarakter(int &charCount, int MAX_CHAR, Character chara[], int &uang){
     cout << "Membuat karakter baru membutuhkan uang 50000\n";
     cout << "Apakah kamu setuju? (1. Ya / 2. Tidak): ";
     cin >> agreeMake;
+
     if(agreeMake == 2){
         cout << "Kamu membatalkan pembuatan karakter\n";
+        return;
+    }
+    else if(uang < 50000){
+        cout << "Uang tidak mencukupi!\n";
         return;
     }
     else if(agreeMake != 1 && agreeMake != 2){
@@ -150,7 +155,7 @@ int toko(int &uang, int charCount, string item[], int harga[], int totalItem){
         }
         else if(beli != 0){
             if(uang < harga[beli-1]){
-                cout << "Uangmu tidak cukup untuk membeli item ini\n";
+                cout << "Uangmu tidak cukup untuk membeli item ini\n\n";
                 continue;
             }
             else{
@@ -454,9 +459,9 @@ int main(){
     int chosenChar = 0;
     int result = -1;
 
-    cout << "==================================";
+    cout << "==================================\n";
     cout << "Selamat datang di game RPG ngasal\n";
-    cout << "==================================";
+    cout << "==================================\n";
     do{
         cout << "Menu: \n";
         cout << "1. Buat karakter baru\n";
