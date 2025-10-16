@@ -172,7 +172,9 @@ int toko(int &uang, int charCount, string item[], int harga[], int totalItem){
 void inventory(string item[], int purchasedItem, int totalItem, int jumlahItemInventory[]){
     cout << "Item kamu: \n";
     for(int i = 0; i < totalItem; i++){
-        cout << i+1 << ". " << item[i] << " - "<< "Kamu punya : " << jumlahItemInventory[i] <<'\n';
+        if(jumlahItemInventory[i] > 0){
+            cout << "- " << item[i] << " - "<< "Kamu punya : " << jumlahItemInventory[i] <<'\n';
+        }
     }
 }
 
