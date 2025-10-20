@@ -429,10 +429,11 @@ void battleReward(Character &chara, Enemy &enemies, int &uang, int MAX_EXP, bool
             cout << "Level up! Level kamu sekarang: " << chara.currentStats.level << '\n';
             cout << "Stats kamu bertambah!\n";
         }
+        cout << '\n';
     }
 
     else{
-        cout << "Kamu tidak mendapatkan apapun karena kalah dalam pertarungan\n";
+        cout << "Kamu tidak mendapatkan apapun karena kalah dalam pertarungan\n\n";
     }
 }
 
