@@ -118,7 +118,7 @@ void listKarakter(int charCount, Character chara[]){
         cout << " HP : " << chara[i].currentStats.HP << '\n';
         cout << " Defense : " << chara[i].currentStats.defense << '\n';
         cout << " Weapon : " << chara[i].weapon << '\n';
-        cout << " Special Item : " << chara[i].specialItem << "\n";
+        cout << " Special Item : " << chara[i].specialItem << "\n\n";
     }
 }
 
@@ -275,7 +275,7 @@ void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemIn
             default:
                 break;
         }
-        cout << "\nStats karakter setelah memakai item: \n\n";
+        cout << "\nStats karakter setelah memakai item: \n";
         listKarakter(charCount, chara);
     }
 }
