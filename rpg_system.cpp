@@ -462,7 +462,7 @@ int main(){
     int result = -1;
 
     cout << "==================================\n";
-    cout << "Selamat datang di game RPG ngasal\n";
+    cout << "Selamat datang di game RPG Jundannz\n";
     cout << "==================================\n";
     do{
         cout << "Menu: \n";
