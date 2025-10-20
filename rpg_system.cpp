@@ -275,7 +275,7 @@ void equipItem(string item[], int purchasedItem, int totalItem, int jumlahItemIn
             default:
                 break;
         }
-        cout << "\nStats karakter setelah memakai item: \n";
+        cout << "\nStats karakter setelah memakai item: \n\n";
         listKarakter(charCount, chara);
     }
 }
